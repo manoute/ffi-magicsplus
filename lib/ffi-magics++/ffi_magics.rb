@@ -11,58 +11,63 @@ module MagPlus
   ffi_lib ["MagPlus","libMagPlus"]
 
   # raw wrapper for C api
-  attach_function 'mag_open', [], :void
-  attach_function 'mag_close', [], :void
-  attach_function 'mag_grib', [], :void
-  attach_function 'mag_coast', [], :void
-  attach_function 'mag_cont', [], :void
-  attach_function 'mag_test', [], :void
-  attach_function 'mag_odb', [], :void
+  begin
+    attach_function 'mag_open', [], :void
+    attach_function 'mag_close', [], :void
+    attach_function 'mag_grib', [], :void
+    attach_function 'mag_coast', [], :void
+    attach_function 'mag_cont', [], :void
+    attach_function 'mag_test', [], :void
+    attach_function 'mag_odb', [], :void
 
-  attach_function 'mag_import', [], :void
-  attach_function 'mag_netcdf', [], :void
-  attach_function 'mag_obs', [], :void
-  attach_function 'mag_raw', [], :void
-  attach_function 'mag_image', [], :void
-  attach_function 'mag_plot', [], :void
-  attach_function 'mag_text', [], :void
-  attach_function 'mag_wind', [], :void
-  attach_function 'mag_symb', [], :void
-  attach_function 'mag_boxplot', [], :void
+    attach_function 'mag_import', [], :void
+    attach_function 'mag_netcdf', [], :void
+    attach_function 'mag_obs', [], :void
+    attach_function 'mag_raw', [], :void
+    attach_function 'mag_image', [], :void
+    attach_function 'mag_plot', [], :void
+    attach_function 'mag_text', [], :void
+    attach_function 'mag_wind', [], :void
+    attach_function 'mag_symb', [], :void
+    attach_function 'mag_boxplot', [], :void
 
-  attach_function 'mag_pie', [], :void
-  attach_function 'mag_graph', [], :void
-  attach_function 'mag_axis', [], :void
-  attach_function 'mag_geo', [], :void
-  attach_function 'mag_eps', [], :void
-  attach_function 'mag_print', [], :void
-  attach_function 'mag_info', [], :void
+    attach_function 'mag_pie', [], :void
+    attach_function 'mag_graph', [], :void
+    attach_function 'mag_axis', [], :void
+    attach_function 'mag_geo', [], :void
+    attach_function 'mag_eps', [], :void
+    attach_function 'mag_print', [], :void
+    attach_function 'mag_info', [], :void
 
-  attach_function 'mag_new', [:string], :void
+    attach_function 'mag_new', [:string], :void
 
-  attach_function 'mag_setc', [:string,:string], :void
+    attach_function 'mag_setc', [:string,:string], :void
 
-  attach_function 'mag_setr', [:string,:double], :void
+    attach_function 'mag_setr', [:string,:double], :void
 
-  attach_function 'mag_seti', [:string,:int], :void
+    attach_function 'mag_seti', [:string,:int], :void
 
-  attach_function 'mag_setp', [:string,:pointer], :void
+    attach_function 'mag_setp', [:string,:pointer], :void
 
-  attach_function 'mag_set1c', [:string,:pointer,:int], :void
+    attach_function 'mag_set1c', [:string,:pointer,:int], :void
 
-  attach_function 'mag_set1i', [:string,:pointer,:int], :void
-  attach_function 'mag_set2i', [:string,:pointer,:int,:int], :void
-  attach_function 'mag_set3i', [:string,:pointer,:int,:int,:int], :void
+    attach_function 'mag_set1i', [:string,:pointer,:int], :void
+    attach_function 'mag_set2i', [:string,:pointer,:int,:int], :void
+    attach_function 'mag_set3i', [:string,:pointer,:int,:int,:int], :void
 
-  attach_function 'mag_set1r', [:string,:pointer,:int], :void
-  attach_function 'mag_set2r', [:string,:pointer,:int,:int], :void
-  attach_function 'mag_set3r', [:string,:pointer,:int,:int,:int], :void
+    attach_function 'mag_set1r', [:string,:pointer,:int], :void
+    attach_function 'mag_set2r', [:string,:pointer,:int,:int], :void
+    attach_function 'mag_set3r', [:string,:pointer,:int,:int,:int], :void
 
-  attach_function 'mag_reset', [:string], :void
+    attach_function 'mag_reset', [:string], :void
 
-  attach_function 'mag_act', [:string,:string,:string], :void
+    attach_function 'mag_act', [:string,:string,:string], :void
 
-  #attach_function'mag_bufr', [], :void # need EmosLib...
+    attach_function'mag_bufr', [], :void # need EmosLib...
+
+  rescue FFI::NotFoundError => e
+    p "WARNING !!! e.message"
+  end
 
   # Allow blocs with open
   # @return [self]
