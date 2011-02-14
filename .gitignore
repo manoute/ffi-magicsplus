@@ -1,6 +1,7 @@
 *.ps
 *.swp
 *~
+.yardoc
 *.gem
 /pkg
 /doc
