@@ -10,21 +10,41 @@ Ruby bindings for magics++ using FFI.
 FEATURES
 --------
 
-**Close to Magics++ C api:** just remove mag_ from C functions : 
+**Close to Magics++ C api :** just remove mag_ from C functions : 
 
-    mag_open becomes open
-    mag_coast becomes coast
+    // With C api
+    mag_open  
+    mag_coast 
     ...
 
-**Except:**
+    # With Ruby Api
+    MagPlus.open
+    Magplus.coast
+    ...
 
-  - mag_new(page|super_page...) becomes new_page, new_super_page...
+**Except :**
 
-  - When setting array, there is no need to provide dimensions:
+  - mag_new :
 
-        mag_set1i("foo",array,12) => set1i("foo",array).
+        // C api
+        mag_new(superpage)
+        mag_new(page)
+        ...
+        
+        # Ruby api
+        MagPlus.new_page
+        MagPlus.new_super_page  
+        ...
 
-  - Blocks can be given to open, enabling automatic close:
+  - When setting array, there is no need to provide dimensions :
+
+        // C api
+        mag_set1i("foo",array,12) 
+        
+        # Ruby api
+        MagPlus.set1i("foo",array) 
+
+  - Blocks can be given to open, enabling automatic close :
 
         MagPlus.open do |m|
           m.setc('output_filename','foo')
@@ -32,7 +52,13 @@ FEATURES
           m.coast
         end 
 
-** Works with ruby array or narray:**
+** Works with ruby array or narray :**
+    
+        # With Ruby array
+        MagPlus.set1r("foo",[44.0, 51.0,52.0,53.0])
+
+        # With NArray
+        MagPlus.set1r("foo",NArray[44.0, 51.0,52.0,53.0])
 
 PROBLEMS
 --------
@@ -41,7 +67,7 @@ No support for bufr.
 
 Only tested with debian and archlinux.
 
-Early version.
+Beta version.
 
 SYNOPSIS
 --------
@@ -92,7 +118,7 @@ Plotting a grib file
     require 'ffi-magics++'
 
     MagPlus.open do |c|
-      c.setc("output_fullname",'z500.ps')
+      c.setc("output_fullname",'foo.ps')
       c.setc("output_format","ps")
       c.setc("grib_input_type","file")
       c.setc("grib_input_file_name","foo.grb")
@@ -113,12 +139,20 @@ REQUIREMENTS
   or have a look at Magics++ installation on their homepage.
 * Need 'ffi'.
 * 'narray' is optionnal.
-* 'rspec' for testing.
+* 'rspec' for testing. 
+* 'yard' to generate the doc.
 
 INSTALL
 -------
 
-gem install ffi-magics++ or ruby setup.rb within tarball (you may need sudo)
+gem install ffi-magics++ or ruby setup.rb within tarball (you may need sudo).
+  
+RUNNING SPECS/TESTS
+-------------------
+
+From the root source tree, type in ruby-1.9.2
+
+    RUBYLIB=.:lib rake test:all 
 
 LICENSE
 -------
