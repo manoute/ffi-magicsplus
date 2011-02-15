@@ -66,7 +66,7 @@ module MagPlus
     attach_function'mag_bufr', [], :void # need EmosLib...
 
   rescue FFI::NotFoundError => e
-    p "WARNING !!! e.message"
+    p "WARNING !!! #{e.message}"
   end
 
   # Allow blocs with open
