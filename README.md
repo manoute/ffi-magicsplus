@@ -71,11 +71,12 @@ SYNOPSIS
 
 TODO
 
-EXEMPLES
+EXAMPLES
 --------
 
 Plotting an array of data
 
+    require 'rubygems' # optional
     require 'ffi-magics++'
 
     MagPlus.open do |c|
@@ -104,6 +105,7 @@ Plotting an array of data
 
 Plotting a grib file
 
+    require 'rubygems' # optional
     require 'ffi-magics++'
 
     MagPlus.open do |c|
