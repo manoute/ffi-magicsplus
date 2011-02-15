@@ -1,5 +1,6 @@
 ffi-magics++
 ============
+[homepage](https://github.com/manoute/ffi-magicsplus)
 
 DESCRIPTION
 -----------
@@ -63,11 +64,7 @@ FEATURES
 PROBLEMS
 --------
 
-No support for bufr.
-
-Only tested with debian and archlinux.
-
-Beta version.
+Experimental.
 
 SYNOPSIS
 --------
@@ -84,18 +81,10 @@ Plotting an array of data
     MagPlus.open do |c|
       c.setc("output_fullname",'2D.ps')
       c.setc("output_format","ps")
-      c.setc("page_id_line","off")
       c.setr("subpage_lower_left_latitude",40.0)
       c.setr("subpage_lower_left_longitude",-10.0)
       c.setr("subpage_upper_right_latitude",55.0)
       c.setr("subpage_upper_right_longitude",10.0)
-      c.setr("map_grid_latitude_reference",0.0)
-      c.setr("map_grid_longitude_reference",0.0)
-      c.setr("map_grid_longitude_increment",5.0)
-      c.setr("map_grid_latitude_increment",5.0)
-      c.setc("map_grid_colour","black")
-      c.setc("map_grid_line_style","dash")
-      c.setc("map_coastline", "on")
       c.setr("input_field_initial_longitude",-180.0)
       c.setr("input_field_longitude_step",1.0)
       c.setr("input_field_initial_latitude",-90.0)
@@ -145,21 +134,21 @@ REQUIREMENTS
 INSTALL
 -------
 
-gem install ffi-magics++ or ruby setup.rb within tarball (you may need sudo).
+    [sudo] gem install ffi-magics++ or ruby setup.rb within tarball 
   
 RUNNING SPECS/TESTS
 -------------------
 
-From the root source tree, type in ruby-1.9.2
+From the root source tree, type :
 
-    RUBYLIB=.:lib rake test:all 
+    [RUBYLIB=.:lib] rake test:all 
 
 LICENSE
 -------
 
 (The MIT License)
 
-Copyright (c) 2010 FIX
+Copyright (c) 2010 Mathieu Deslandes
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
