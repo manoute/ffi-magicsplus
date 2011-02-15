@@ -1,7 +1,7 @@
 begin
   require 'echoe'
 
-  Echoe.new('ffi-magics++', '0.1.1') do |p|
+  Echoe.new('ffi-magicsplus', '0.1.1') do |p|
     p.description    = "Ruby wrapper for magics++ using ffi"
     p.url            = "https://github.com/manoute/ffi-magicsplus"
     p.author         = "Mathieu Deslandes"

@@ -134,7 +134,7 @@ REQUIREMENTS
 INSTALL
 -------
 
-    [sudo] gem install ffi-magics++ or ruby setup.rb within tarball 
+    [sudo] gem install ffi-magicsplus or ruby setup.rb within tarball 
   
 RUNNING SPECS/TESTS
 -------------------
