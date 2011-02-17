@@ -122,6 +122,9 @@ Plotting a grib file
       c.coast
     end
 
+
+For other examples, see examples directory.
+
 REQUIREMENTS
 ------------
 
