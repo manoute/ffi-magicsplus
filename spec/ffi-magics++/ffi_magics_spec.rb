@@ -1,22 +1,13 @@
 require 'spec_helper'
 require 'fileutils'
 
-def narray_installed
-  begin
-    require 'narray'
-    true
-  rescue LoadError
-    puts "\nnarray not found, narray tests won't be run."
-    false
-  end
-end
-
 ENV["MAGPLUS_QUIET"] = "yes"
 
 describe MagPlus do
   before do
     @grib_file = File.join(File.dirname(__FILE__),"../data","z500.grb")
     @output_file = File.join(File.dirname(__FILE__),"../data","sample.ps")
+    @output_file1 = File.join(File.dirname(__FILE__),"../data","sample1.ps")
     @grib_visu = File.join(File.dirname(__FILE__),"../data","z500.ps")
     @array2D_visu = File.join(File.dirname(__FILE__),"../data","2D.ps")
     @symb_visu = File.join(File.dirname(__FILE__),"../data","symb.ps")
@@ -25,7 +16,7 @@ describe MagPlus do
   def ps_files_compare(expected_output)
     output = open(@output_file,"r") {|f| f.readlines} 
     expected = open(expected_output,"r") {|f| f.readlines} 
-    (output - expected).length.should == 1 #only date should be different
+    (output - expected).length.should be <= 1 #only date may be different
   end
 
   context "return value from function" do
@@ -175,4 +166,31 @@ describe MagPlus do
       ps_files_compare(@symb_visu)
     end
   end
+
+  context "More object oriented look" do
+    it "coast(and others!!) should accept a hash" do
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file1)
+        m.setc("output_format","ps")
+        %w{subpage_lower_left_latitude subpage_lower_left_longitude
+        subpage_upper_right_latitude subpage_upper_right_longitude}.each do |str|
+          m.reset(str)
+        end
+        m.setr('subpage_upper_right_latitude',30.0)
+        m.coast
+      end
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file)
+        m.setc("output_format","ps")
+        %w{subpage_lower_left_latitude subpage_lower_left_longitude
+        subpage_upper_right_latitude subpage_upper_right_longitude}.each do |str|
+          m.reset(str)
+        end
+        m.coast({:subpage_upper_right_latitude => 30.0})
+      end
+
+      ps_files_compare(@output_file1)
+    end
+  end
 end
+

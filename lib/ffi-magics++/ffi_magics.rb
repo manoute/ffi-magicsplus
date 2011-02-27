@@ -1,6 +1,9 @@
 require 'ffi'
 require 'ffi-magics++/core_ext/array'
 require 'ffi-magics++/core_ext/narray'
+require 'ffi-magics++/core_ext/integer'
+require 'ffi-magics++/core_ext/float'
+require 'ffi-magics++/core_ext/string'
 require 'ffi-magics++/core_ext/memorypointer'
 
 # Wrapper for Magics++ C api using ffi.
@@ -161,7 +164,15 @@ module MagPlus
   self.methods.each do |f|
     if f =~ /^mag_(.*)$/ && !self.respond_to?($1.to_sym) && $1 != 'new'
       define_method($1.to_sym) do |*args|
-        send(f.to_sym,*args)
+        hash,*rest = *args
+        if hash.respond_to? :each_pair
+          hash.each_pair do |k,v|
+            send(v.magics_set_name.to_sym,k.to_s,v)
+          end
+        else
+          rest = args
+        end
+        send(f.to_sym,*rest)
         self
       end
     end

@@ -1,4 +1,4 @@
-# Methods to add to a FFI::MemoryPointer in rubinius
+# Add methods to FFI::MemoryPointer in rubinius
 module MagPlus
   module CoreExtensions
     module MemoryPointer
@@ -28,7 +28,6 @@ module MagPlus
 end
 
 
-# Add methods to FFI::MemoryPointer in rubinius
 class FFI::MemoryPointer
   include(MagPlus::CoreExtensions::MemoryPointer) unless respond_to?(:from_string)
 end

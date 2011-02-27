@@ -1,6 +1,16 @@
 require 'rspec' 
 require 'ffi-magics++'
 
+def narray_installed
+  begin
+    require 'narray'
+    true
+  rescue LoadError
+    puts "\nnarray not found, narray tests won't be run."
+    false
+  end
+end
+
 class << MagPlus
   def plot_basic(file_name)
     %W{contour_level_list contour_shade_colour_list symbol_input_x_position 
