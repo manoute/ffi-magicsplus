@@ -159,19 +159,21 @@ module MagPlus
     self
   end
 
-  # generate foo method, equivalent method to mag_foo, but returning self
+  # generate foo method, equivalent method to mag_foo, but returning self,
+  # accepting a hash or a block.
   # except for mag_new and methods that are already defined (set1r...)
   self.methods.each do |f|
     if f =~ /^mag_(.*)$/ && !self.respond_to?($1.to_sym) && $1 != 'new'
-      define_method($1.to_sym) do |*args|
+      define_method($1.to_sym) do |*args, &block|
         hash,*rest = *args
         if hash.respond_to? :each_pair
           hash.each_pair do |k,v|
-            send(v.magics_set_name.to_sym,k.to_s,v)
+            send(v.magics_set_name,k.to_s,v)
           end
         else
           rest = args
         end
+        block.call self if block
         send(f.to_sym,*rest)
         self
       end
@@ -187,6 +189,13 @@ module MagPlus
       send(:mag_new,p)
       self
     end
+  end
+
+  def method_missing(param,*args,&block)
+    if (param.to_s =~ /=$/) && (args[0].respond_to? :magics_set_name)
+      return send(args[0].magics_set_name,param.to_s.chop,args[0]) 
+    end
+    super
   end
 end
 

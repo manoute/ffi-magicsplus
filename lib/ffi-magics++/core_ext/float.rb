@@ -3,7 +3,7 @@ module MagPlus
     module Float
       # Name of the method expected by Magics++ when setting an float
       def magics_set_name
-        'setr'
+        :setr
       end
     end
   end

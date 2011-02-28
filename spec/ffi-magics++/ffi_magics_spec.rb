@@ -167,8 +167,8 @@ describe MagPlus do
     end
   end
 
-  context "More object oriented look" do
-    it "coast(and others!!) should accept a hash" do
+  context "More object oriented" do
+    before do
       MagPlus.open do |m|
         m.setc("output_fullname",@output_file1)
         m.setc("output_format","ps")
@@ -178,19 +178,49 @@ describe MagPlus do
         end
         m.setr('subpage_upper_right_latitude',30.0)
         m.coast
-      end
-      MagPlus.open do |m|
-        m.setc("output_fullname",@output_file)
-        m.setc("output_format","ps")
         %w{subpage_lower_left_latitude subpage_lower_left_longitude
         subpage_upper_right_latitude subpage_upper_right_longitude}.each do |str|
           m.reset(str)
         end
+      end
+    end
+
+    after do
+      File.delete @output_file1
+      File.delete @output_file
+    end
+
+    it "coast(and others...) should accept a hash" do
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file)
+        m.setc("output_format","ps")
         m.coast({:subpage_upper_right_latitude => 30.0})
       end
-
       ps_files_compare(@output_file1)
     end
+
+    it "param = foo should act like set..('param',foo)" do
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file)
+        m.setc("output_format","ps")
+        m.subpage_upper_right_latitude = 30.0
+        m.coast 
+      end
+      ps_files_compare(@output_file1)
+    end
+
+    it "coast(and others...) should accept a block" do
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file)
+        m.setc("output_format","ps")
+        m.coast do |c|
+          c.subpage_upper_right_latitude = 30.0
+        end
+      end
+      ps_files_compare(@output_file1)
+    end
+    
+
   end
 end
 

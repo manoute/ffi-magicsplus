@@ -16,19 +16,19 @@ module MagPlus
        
       # Name of the method expected by Magics++ when setting an array
       # @example 1D array of int should be used with set1i
-      #   [1, 2, 3].magics_set_name return 'set1i'
+      #   [1, 2, 3].magics_set_name return :set1i
       def magics_set_name
         case
         when self[0].is_a?(Integer) 
-          'set1i'
+          :set1i
         when self[0].is_a?(Float) 
-          'set1r'
+          :set1r
         when self[0].respond_to?(:[]) && self[0][0].is_a?(Integer) 
-          'set2i'
+          :set2i
         when self[0].respond_to?(:[]) && self[0][0].is_a?(Float) 
-          'set2r'
+          :set2r
         when self[0].is_a?(String) 
-          'set1c'
+          :set1c
         else
           raise TypeError, "This array can't be used with magics_api."
         end

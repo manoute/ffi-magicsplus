@@ -3,7 +3,7 @@ module MagPlus
     module String
       # Name of the method expected by Magics++ when setting an string
       def magics_set_name
-        'setc'
+        :setc
       end
  
     end

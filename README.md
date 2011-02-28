@@ -53,6 +53,23 @@ FEATURES
           m.coast
         end 
 
+  - A hash and block can be provided to a method :
+        
+        # C-api like
+        Magplus.setr('subpage_upper_right_latitude',30.0)
+        Magplus.setr('subpage_upper_right_longitude',30.0)
+        Magplus.coast
+        
+        # Same thing with a hash
+        Magplus.coast({:subpage_upper_right_latitude => 30.0,
+          :subpage_upper_right_longitude => 30.0})
+
+        # Same thing with a block
+        Magplus.coast do |c|
+          c.setr('subpage_upper_right_latitude',30.0)
+          c.setr('subpage_upper_right_longitude',30.0)
+        end
+
 ** Works with ruby array or narray :**
     
         # With Ruby array
@@ -65,11 +82,6 @@ PROBLEMS
 --------
 
 Experimental.
-
-SYNOPSIS
---------
-
-TODO
 
 EXAMPLES
 --------

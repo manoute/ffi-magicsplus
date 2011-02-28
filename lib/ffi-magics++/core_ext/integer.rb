@@ -3,7 +3,7 @@ module MagPlus
     module Integer
       # Name of the method expected by Magics++ when setting an integer
       def magics_set_name
-        'seti'
+        :seti
       end
  
     end
