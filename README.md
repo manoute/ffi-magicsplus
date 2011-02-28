@@ -139,10 +139,11 @@ For other examples, see examples directory.
 
 REQUIREMENTS
 ------------
-
+* A ruby implementation ([RVM](http://rvm.beginrescueend.com) allows to easily install, manage and work with multiple ruby environments.)
 * Magics++ must be installed :
-  apt-get install magics++ 
-  or have a look at Magics++ installation on their homepage.
+
+      apt-get install magics++ 
+   or have a look at Magics++ installation on their homepage.
 * Need 'ffi'.
 * 'narray' is optionnal.
 * 'rspec' for testing. 
@@ -151,7 +152,11 @@ REQUIREMENTS
 INSTALL
 -------
 
-    [sudo] gem install ffi-magicsplus or ruby setup.rb within tarball 
+    [sudo] gem install ffi-magicsplus 
+
+  or 
+    
+    ruby setup.rb within tarball 
   
 RUNNING SPECS/TESTS
 -------------------
