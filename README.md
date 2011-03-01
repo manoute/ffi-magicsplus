@@ -45,7 +45,7 @@ FEATURES
         # Ruby api
         MagPlus.set1i("foo",array) 
 
-  - Blocks can be given to open, enabling automatic close :
+** Blocks can be given to open, enabling automatic close :**
 
         MagPlus.open do |m|
           m.setc('output_filename','foo')
@@ -53,21 +53,25 @@ FEATURES
           m.coast
         end 
 
-  - A hash and block can be provided to a method :
+** Setting parameter can be done with = :**
+
+        Magplus.subpage_upper_right_latitude = 30.0
+
+** A hash and block can be given to methods :**
         
         # C-api like
         Magplus.setr('subpage_upper_right_latitude',30.0)
         Magplus.setr('subpage_upper_right_longitude',30.0)
-        Magplus.coast
+        Magplus.new_subpage
         
         # Same thing with a hash
-        Magplus.coast({:subpage_upper_right_latitude => 30.0,
+        Magplus.new_subpage({:subpage_upper_right_latitude => 30.0,
           :subpage_upper_right_longitude => 30.0})
 
         # Same thing with a block
-        Magplus.coast do |c|
+        Magplus.new_subpage do |c|
           c.setr('subpage_upper_right_latitude',30.0)
-          c.setr('subpage_upper_right_longitude',30.0)
+          c.subpage_upper_right_longitude = 30.0
         end
 
 ** Works with ruby array or narray :**
@@ -93,11 +97,16 @@ Plotting an array of data
 
     MagPlus.open do |c|
       c.setc("output_fullname",'2D.ps')
-      c.setc("output_format","ps")
-      c.setr("subpage_lower_left_latitude",40.0)
-      c.setr("subpage_lower_left_longitude",-10.0)
-      c.setr("subpage_upper_right_latitude",55.0)
-      c.setr("subpage_upper_right_longitude",10.0)
+
+      # Block syntax
+      c.new_subpage do |sub|
+        sub.subpage_lower_left_latitude = 40.0
+        sub.subpage_lower_left_longitude = -10.0
+        sub.subpage_upper_right_latitude = 55.0
+        sub.subpage_upper_right_longitude = 10.0
+      end
+
+      # C-api syntax
       c.setr("input_field_initial_longitude",-180.0)
       c.setr("input_field_longitude_step",1.0)
       c.setr("input_field_initial_latitude",-90.0)
@@ -105,34 +114,41 @@ Plotting an array of data
       data = []
       (0..180).each {|i| data << (360.times.inject([]){|r,e| r << e})}
       c.set2r('input_field', data)
-      c.setc("contour","off")
-      c.setc("contour_label","off")
-      c.setc("contour_shade","on")
-      c.setc("contour_shade_method","area_fill")
-      c.seti("contour_level_count",30)
-      c.cont
+
+      # Hash syntax
+      c.cont({:contour => 'off', :contour_label => 'off', 
+        :contour_shade => 'on', :contour_shade_method => 'area_fill',
+        :contour_level_count => 30})
+
       c.coast
     end
 
 
-Plotting a grib file
+Using module as a mixing and plotting a grib file
 
     require 'rubygems' # optional
     require 'ffi-magics++'
 
-    MagPlus.open do |c|
-      c.setc("output_fullname",'foo.ps')
-      c.setc("output_format","ps")
-      c.setc("grib_input_type","file")
-      c.setc("grib_input_file_name","foo.grb")
-      c.setc("contour","on")
-      c.setc("contour_label","on")
-      c.setc("contour_shade","on")
-      c.setc("contour_shade_method","area_fill")
-      c.grib
-      c.cont
-      c.coast
+    class Toto
+      include MagPlus
+
+      def grib_plot
+        open do
+          self.output_fullname = 'foo.pdf'
+
+          grib({:grib_input_type => 'file',
+                :grib_input_file_name => 'foo.grb'})
+
+          cont({:contour => 'on', :contour_shade => 'on',
+                :contour_shade_method => 'area_fill'})
+          
+          coast
+        end
+      end
     end
+
+    Toto.new.grib_plot
+
 
 
 For other examples, see examples directory.
@@ -143,6 +159,7 @@ REQUIREMENTS
 * Magics++ must be installed :
 
       apt-get install magics++ 
+
    or have a look at Magics++ installation on their homepage.
 * Need 'ffi'.
 * 'narray' is optionnal.
@@ -154,10 +171,7 @@ INSTALL
 
     [sudo] gem install ffi-magicsplus 
 
-  or 
-    
-    ruby setup.rb within tarball 
-  
+ 
 RUNNING SPECS/TESTS
 -------------------
 

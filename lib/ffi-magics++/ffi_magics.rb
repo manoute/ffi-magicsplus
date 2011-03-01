@@ -8,7 +8,7 @@ require 'ffi-magics++/core_ext/memorypointer'
 
 # Wrapper for Magics++ C api using ffi.
 module MagPlus
-  VERSION = '0.1.1'
+  VERSION = '0.2.1'
   extend self
   extend FFI::Library
   ffi_lib ["MagPlus","libMagPlus"]
@@ -159,6 +159,16 @@ module MagPlus
     self
   end
 
+  # mag_new equivalent methods 
+  # mag_new("page") => mag_new_page
+  # mag_new("subpage") => mag_new_subpage
+  # mag_new("super_page") => mag_new_super_page
+  %W{page subpage super_page}.each do |p|
+    define_method("mag_new_#{p}".to_sym) do 
+      send(:mag_new,p)
+    end
+  end
+
   # generate foo method, equivalent method to mag_foo, but returning self,
   # accepting a hash or a block.
   # except for mag_new and methods that are already defined (set1r...)
@@ -180,17 +190,6 @@ module MagPlus
     end
   end
   
-  # mag_new equivalent methods returning self
-  # mag_new("page") => new_page
-  # mag_new("subpage") => new_subpage
-  # mag_new("super_page") => new_super_page
-  %W{page subpage super_page}.each do |p|
-    define_method("new_#{p}".to_sym) do 
-      send(:mag_new,p)
-      self
-    end
-  end
-
   def method_missing(param,*args,&block)
     if (param.to_s =~ /=$/) && (args[0].respond_to? :magics_set_name)
       return send(args[0].magics_set_name,param.to_s.chop,args[0]) 

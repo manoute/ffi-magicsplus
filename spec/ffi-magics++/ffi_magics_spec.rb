@@ -21,11 +21,7 @@ describe MagPlus do
 
   context "return value from function" do
     it "function starting with mag_ should exists" do
-      MagPlus.open do |c|
-        c.plot_basic(@output_file)
-        c.coast #crash without this line in 1.9
-        c.respond_to?(:mag_coast).should be_true
-      end
+      MagPlus.respond_to?(:mag_coast).should be_true
     end
 
     it "function starting with mag_ should return her original API value (always nil)" do
@@ -47,11 +43,11 @@ describe MagPlus do
     end
     
     it "mag_new equivalent returning self are new_page, new_subpage, new_super_page" do
-      MagPlus.open do |c|
-        c.plot_basic(@output_file)
-        c.new_page.should.respond_to?(:mag_plot)
-        c.coast
-      end
+      MagPlus.open 
+      MagPlus.plot_basic(@output_file)
+      MagPlus.new_page.respond_to?(:mag_plot).should be_true
+      MagPlus.coast
+      MagPlus.close
     end
   end
 
@@ -167,7 +163,7 @@ describe MagPlus do
     end
   end
 
-  context "More object oriented" do
+  context "More ruby-like" do
     before do
       MagPlus.open do |m|
         m.setc("output_fullname",@output_file1)
@@ -190,11 +186,12 @@ describe MagPlus do
       File.delete @output_file
     end
 
-    it "coast(and others...) should accept a hash" do
+    it "new_subpage (and others...) should accept a hash" do
       MagPlus.open do |m|
         m.setc("output_fullname",@output_file)
         m.setc("output_format","ps")
-        m.coast({:subpage_upper_right_latitude => 30.0})
+        m.new_subpage({:subpage_upper_right_latitude => 30.0})
+        m.coast
       end
       ps_files_compare(@output_file1)
     end
@@ -209,18 +206,17 @@ describe MagPlus do
       ps_files_compare(@output_file1)
     end
 
-    it "coast(and others...) should accept a block" do
+    it "new_subpage (and others...) should accept a block" do
       MagPlus.open do |m|
         m.setc("output_fullname",@output_file)
         m.setc("output_format","ps")
-        m.coast do |c|
+        m.new_subpage do |c|
           c.subpage_upper_right_latitude = 30.0
         end
+        m.coast
       end
       ps_files_compare(@output_file1)
     end
-    
-
   end
 end
 
