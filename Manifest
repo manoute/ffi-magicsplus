@@ -1,5 +1,6 @@
 History.txt
 README.md
+History.md
 Rakefile
 examples/graph.rb
 examples/wavewatch3.rb
