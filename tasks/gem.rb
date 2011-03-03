@@ -10,7 +10,7 @@ begin
     p.runtime_dependencies = ['ffi']
   end
 rescue LoadError => e
-  p "e.message"
+  p "#{e.message}"
 end
 
 

@@ -160,7 +160,8 @@ REQUIREMENTS
 
       apt-get install magics++ 
 
-   or have a look at Magics++ installation on their homepage.
+      or have a look at Magics++ installation on their homepage.
+
 * Need 'ffi'.
 * 'narray' is optionnal.
 * 'rspec' for testing. 
