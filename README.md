@@ -86,6 +86,8 @@ PROBLEMS
 --------
 
 Experimental.
+Only tested with Debian package and custom package on Archlinux.
+Bufr not tested...working?
 
 EXAMPLES
 --------
