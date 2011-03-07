@@ -8,7 +8,7 @@ require 'ffi-magics++/core_ext/memorypointer'
 
 # Wrapper for Magics++ C api using ffi.
 module MagPlus
-  VERSION = '0.2.1'
+  VERSION = '0.2.2'
 
   # Hash listing parameters provided to Magics++ between
   # open and close
