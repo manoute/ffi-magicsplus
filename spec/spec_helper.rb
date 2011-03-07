@@ -11,14 +11,25 @@ def narray_installed
   end
 end
 
+RSpec::Matchers.define :be_the_same_ps_file do |file1|
+  match do |file|
+    output = open(file,"r") {|f| f.readlines} 
+    expected = open(file1,"r") {|f| f.readlines} 
+    (output - expected).length <= 1 
+  end
+
+  failure_message_for_should do |file|
+    "expected file #{file} to be identical to #{file1}"
+  end
+
+  failure_message_for_should_not do |file|
+    "expected file #{file} to be different from #{file1}"
+  end
+
+end
+
 class << MagPlus
   def plot_basic(file_name)
-    %W{contour_level_list contour_shade_colour_list symbol_input_x_position 
-      contour_level_selection_type contour_shade_method contour_shade_colour_method 
-      contour_shade_colour_list
-      symbol_input_y_position symbol_input_marker_list}.each do |str|
-      reset(str)
-    end
     setc("output_format","ps")
     setc("output_fullname",file_name)
     setc("page_id_line","off")
@@ -69,7 +80,6 @@ class << MagPlus
     cont
     coast
   end
-
 end
 
 

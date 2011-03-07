@@ -9,6 +9,11 @@ require 'ffi-magics++/core_ext/memorypointer'
 # Wrapper for Magics++ C api using ffi.
 module MagPlus
   VERSION = '0.2.1'
+
+  # Hash listing parameters provided to Magics++ between
+  # open and close
+  attr_accessor :params
+
   extend self
   extend FFI::Library
   ffi_lib ["MagPlus","libMagPlus"]
@@ -72,14 +77,28 @@ module MagPlus
     p "WARNING !!! #{e.message}"
   end
 
+  # Revert settings to default
+  def reset_all
+    @params.each_key {|k| reset(k.to_s)}
+    @params = {}
+  end
+
+  # reset all params and close
+  def close
+    reset_all
+    mag_close
+    self
+  end
+
   # Allow blocs with open
   # @return [self]
   def open
     mag_open
+    @params = {}
     if block_given?
       begin
         yield self
-        mag_close
+        close
       rescue StandardError => e
         puts e.message
       end
@@ -98,7 +117,8 @@ module MagPlus
     raise TypeError, 
       "#{ary.class} doesn't respond to :to_C_double_array and :magics_total" unless 
         (ary.respond_to? :to_C_double_array) && (ary.respond_to? :magics_total)
-    mag_set1r(str,ary.to_C_double_array,ary.magics_total)
+    @params[str.to_sym] = [ary.to_C_double_array,ary.magics_total]
+    mag_set1r(str,*params[str.to_sym])
     self
   end
 
@@ -112,7 +132,9 @@ module MagPlus
     raise TypeError, 
       "#{ary.class} doesn't respond to :to_C_double_array and :shape" unless 
         (ary.respond_to? :to_C_double_array) && (ary.respond_to? :shape)
-    mag_set2r(str,ary.to_C_double_array,ary.shape[0],ary.shape[1])
+    @params[str.to_sym] = [ary.to_C_double_array,
+      ary.shape[0],ary.shape[1]]
+    mag_set2r(str, *params[str.to_sym])
     self
   end
 
@@ -126,7 +148,8 @@ module MagPlus
     raise TypeError, 
       "#{ary.class} doesn't respond to :to_C_int_array and :magics_total" unless 
         (ary.respond_to? :to_C_int_array) && (ary.respond_to? :magics_total)
-    mag_set1i(str,ary.to_C_int_array,ary.magics_total)
+    @params[str.to_sym] = [ary.to_C_int_array,ary.magics_total]
+    mag_set1i(str, *params[str.to_sym])
     self
   end
 
@@ -140,7 +163,9 @@ module MagPlus
     raise TypeError, 
       "#{ary.class} doesn't respond to :to_C_int_array and :shape" unless 
         (ary.respond_to? :to_C_int_array) && (ary.respond_to? :shape)
-    mag_set2i(str,ary.to_C_int_array,ary.shape[0],ary.shape[1])
+    @params[str.to_sym] = [ary.to_C_int_array,
+      ary.shape[0], ary.shape[1]]
+    mag_set2i(str, *params[str.to_sym])
     self
   end
   
@@ -155,7 +180,8 @@ module MagPlus
     end
     sa_ptr= FFI::MemoryPointer.new(:pointer, sa.length)
     sa_ptr.write_array_of_pointer(strptrs)
-    mag_set1c(str,sa_ptr,sa.length)
+    @params[str.to_sym] =  [sa_ptr,sa.length]
+    mag_set1c(str, *params[str.to_sym])
     self
   end
 
@@ -173,6 +199,14 @@ module MagPlus
   # accepting a hash or a block.
   # except for mag_new and methods that are already defined (set1r...)
   self.methods.each do |f|
+    if f =~ /^mag_set(.*)$/ && !self.respond_to?("set#{$1}".to_sym) 
+      define_method("set#{$1}".to_sym) do |*args|
+        params[args[0].to_sym] = args[1]
+        send(f.to_sym,*args)
+        self
+      end
+    end
+
     if f =~ /^mag_(.*)$/ && !self.respond_to?($1.to_sym) && $1 != 'new'
       define_method($1.to_sym) do |*args, &block|
         hash,*rest = *args

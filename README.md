@@ -45,6 +45,8 @@ FEATURES
         # Ruby api
         MagPlus.set1i("foo",array) 
 
+  - After close, all parameters are reset to their default values.
+
 ** Blocks can be given to open, enabling automatic close :**
 
         MagPlus.open do |m|
@@ -74,6 +76,14 @@ FEATURES
           c.subpage_upper_right_longitude = 30.0
         end
 
+** params hash is filled with the settings :**
+
+        MagPlus.open
+        MagPlus.subpage_lower_left_latitude = 30.0
+        MagPlus.params #  {:subpage_lower_left_latitude => 30.0}
+        MagPlus.reset_all # reset all parameters to their default value
+        MagPlus.params #  {}
+    
 ** Works with ruby array or narray :**
     
         # With Ruby array
@@ -86,7 +96,9 @@ PROBLEMS
 --------
 
 Experimental.
+
 Only tested with Debian package and custom package on Archlinux.
+
 Bufr not tested...working?
 
 EXAMPLES

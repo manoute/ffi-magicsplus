@@ -13,12 +13,6 @@ describe MagPlus do
     @symb_visu = File.join(File.dirname(__FILE__),"../data","symb.ps")
   end
 
-  def ps_files_compare(expected_output)
-    output = open(@output_file,"r") {|f| f.readlines} 
-    expected = open(expected_output,"r") {|f| f.readlines} 
-    (output - expected).length.should be <= 1 #only date may be different
-  end
-
   context "return value from function" do
     it "function starting with mag_ should exists" do
       MagPlus.respond_to?(:mag_coast).should be_true
@@ -48,6 +42,44 @@ describe MagPlus do
       MagPlus.new_page.respond_to?(:mag_plot).should be_true
       MagPlus.coast
       MagPlus.close
+    end
+  end
+
+  describe 'Params hash',  do
+    it 'is empty after open and before any settings methods' do
+      MagPlus.open.params.should == {}
+    end
+
+    it 'is then filled with parameters settings provided to Magics++' do
+      MagPlus.open
+      MagPlus.setr('subpage_lower_left_latitude', 30.0)
+      MagPlus.params.should == {:subpage_lower_left_latitude => 30.0}
+      MagPlus.coast
+      MagPlus.close.params
+    end
+
+
+    it 'is empty just before close' do
+      MagPlus.open
+      MagPlus.setr('subpage_lower_left_latitude', 30.0)
+      MagPlus.coast
+      MagPlus.close.params.should == {}
+    end
+
+    it 'all parameters are reset to their default value just before close' do
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file)
+        m.setc("output_format","ps")
+        m.subpage_upper_right_latitude = 30.0
+        m.coast 
+      end
+
+      MagPlus.open do |m|
+        m.setc("output_fullname",@output_file1)
+        m.setc("output_format","ps")
+        m.coast 
+      end
+      @output_file.should_not be_the_same_ps_file(@output_file1)
     end
   end
 
@@ -89,7 +121,7 @@ describe MagPlus do
             c.set1r("contour_level_list",NArray.float(40).indgen!(530,1))
           end
         end
-        ps_files_compare(@grib_visu)
+        @output_file.should be_the_same_ps_file(@grib_visu)
       end
 
       it "set2r should work with narray" do
@@ -104,7 +136,7 @@ describe MagPlus do
           end
 
         end
-        ps_files_compare(@array2D_visu)
+        @output_file.should be_the_same_ps_file(@array2D_visu)
       end
 
       it "set1i should work with narray" do
@@ -118,7 +150,7 @@ describe MagPlus do
           c.symb
           c.coast
         end
-        ps_files_compare(@symb_visu)
+        @output_file.should be_the_same_ps_file(@symb_visu)
       end
     end
   end
@@ -132,7 +164,7 @@ describe MagPlus do
             (530..569).inject([]) {|a,e| a << e })
         end
       end
-      ps_files_compare(@grib_visu)
+      @output_file.should be_the_same_ps_file(@grib_visu)
     end
 
     it "set2r should work with ruby array" do
@@ -145,7 +177,7 @@ describe MagPlus do
         end
 
       end
-      ps_files_compare(@array2D_visu)
+      @output_file.should be_the_same_ps_file(@array2D_visu)
     end
 
     it "set1i should work with ruby array" do
@@ -159,25 +191,17 @@ describe MagPlus do
         c.symb
         c.coast
       end
-      ps_files_compare(@symb_visu)
+      @output_file.should be_the_same_ps_file(@symb_visu)
     end
   end
 
-  context "More ruby-like" do
+  context "More object-like" do
     before do
       MagPlus.open do |m|
         m.setc("output_fullname",@output_file1)
         m.setc("output_format","ps")
-        %w{subpage_lower_left_latitude subpage_lower_left_longitude
-        subpage_upper_right_latitude subpage_upper_right_longitude}.each do |str|
-          m.reset(str)
-        end
         m.setr('subpage_upper_right_latitude',30.0)
         m.coast
-        %w{subpage_lower_left_latitude subpage_lower_left_longitude
-        subpage_upper_right_latitude subpage_upper_right_longitude}.each do |str|
-          m.reset(str)
-        end
       end
     end
 
@@ -193,7 +217,7 @@ describe MagPlus do
         m.new_subpage({:subpage_upper_right_latitude => 30.0})
         m.coast
       end
-      ps_files_compare(@output_file1)
+      @output_file.should be_the_same_ps_file(@output_file1)
     end
 
     it "param = foo should act like set..('param',foo)" do
@@ -203,7 +227,7 @@ describe MagPlus do
         m.subpage_upper_right_latitude = 30.0
         m.coast 
       end
-      ps_files_compare(@output_file1)
+      @output_file.should be_the_same_ps_file(@output_file1)
     end
 
     it "new_subpage (and others...) should accept a block" do
@@ -215,7 +239,7 @@ describe MagPlus do
         end
         m.coast
       end
-      ps_files_compare(@output_file1)
+      @output_file.should be_the_same_ps_file(@output_file1)
     end
   end
 end
