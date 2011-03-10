@@ -45,8 +45,8 @@ describe MagPlus do
     end
   end
 
-  describe 'Params hash',  do
-    it 'is empty after open and before any settings methods' do
+  describe 'Params hash'  do
+    it 'is empty after first open and before any settings methods' do
       MagPlus.open.params.should == {}
     end
 
@@ -55,31 +55,55 @@ describe MagPlus do
       MagPlus.setr('subpage_lower_left_latitude', 30.0)
       MagPlus.params.should == {:subpage_lower_left_latitude => 30.0}
       MagPlus.coast
-      MagPlus.close.params
+      MagPlus.close
     end
 
+    context 'calling close' do
+      it 'is empty just before close' do
+        MagPlus.open
+        MagPlus.setr('subpage_lower_left_latitude', 30.0)
+        MagPlus.coast
+        MagPlus.close.params.should == {}
+      end
 
-    it 'is empty just before close' do
-      MagPlus.open
-      MagPlus.setr('subpage_lower_left_latitude', 30.0)
-      MagPlus.coast
-      MagPlus.close.params.should == {}
+      it 'all parameters are reset to their default value just before close' do
+        MagPlus.open do |m|
+          m.setc("output_fullname",@output_file)
+          m.subpage_upper_right_latitude = 30.0
+          m.coast 
+        end
+
+        MagPlus.open do |m|
+          m.setc("output_fullname",@output_file1)
+          m.coast 
+        end
+        @output_file.should_not be_the_same_ps_file(@output_file1)
+      end
     end
 
-    it 'all parameters are reset to their default value just before close' do
-      MagPlus.open do |m|
-        m.setc("output_fullname",@output_file)
-        m.setc("output_format","ps")
-        m.subpage_upper_right_latitude = 30.0
-        m.coast 
+    context 'calling close(false)' do
+      it 'params hash is kept in memory' do
+        MagPlus.open(false) do |m|
+          m.subpage_lower_left_latitude = 30.0
+          m.coast
+        end
+        MagPlus.params.should == {:subpage_lower_left_latitude => 30.0}
+        MagPlus.open {|m| m.coast}
       end
 
-      MagPlus.open do |m|
-        m.setc("output_fullname",@output_file1)
-        m.setc("output_format","ps")
-        m.coast 
+      it 'parameters are not reset to their default value just before close' do
+        MagPlus.open(false) do |m|
+          m.setc("output_fullname",@output_file)
+          m.subpage_upper_right_latitude = 30.0
+          m.coast 
+        end
+
+        MagPlus.open do |m|
+          m.setc("output_fullname",@output_file1)
+          m.coast 
+        end
+        @output_file.should be_the_same_ps_file(@output_file1)
       end
-      @output_file.should_not be_the_same_ps_file(@output_file1)
     end
   end
 

@@ -45,7 +45,7 @@ FEATURES
         # Ruby api
         MagPlus.set1i("foo",array) 
 
-  - After close, all parameters are reset to their default values.
+  - After close, all parameters are reset to their default values, to avoid this behaviour, use close(false) or open(false) do ... end.
 
 ** Blocks can be given to open, enabling automatic close :**
 

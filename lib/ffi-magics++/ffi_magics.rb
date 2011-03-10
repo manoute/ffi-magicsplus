@@ -83,22 +83,22 @@ module MagPlus
     @params = {}
   end
 
-  # reset all params and close
-  def close
-    reset_all
+  # reset all params (unless close(false)) and close
+  def close(params_reset = true)
+    reset_all if params_reset
     mag_close
     self
   end
 
   # Allow blocs with open
   # @return [self]
-  def open
+  def open(params_reset = true)
     mag_open
-    @params = {}
+    @params ||= {}
     if block_given?
       begin
         yield self
-        close
+        close(params_reset)
       rescue StandardError => e
         puts e.message
       end
